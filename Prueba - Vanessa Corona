@@ -1,0 +1,153 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Prueba Vanessa Corona</title>
+<script>
+	var numeroParticipantes=0;
+	var intentos=0;
+	var listaNumero=[];
+	var numeroObtenido=[];
+	var numeroGanador=0;
+
+	
+/************************************************************************************************************************************/	
+function ObtenNumero(){
+
+	
+	if(intentos==0){ //Para inicializar los valores
+		var objeto=new Object();
+		
+		objeto.numeroPersonas= document.getElementById("numeroPersonas").value;
+		if(objeto.numeroPersonas==""){//si el textarea está vacío lanza error
+			alert("ERROR: Introduce el número de personas que participan en la rifa");
+		}
+		else{
+			
+			if(isNaN(objeto.numeroPersonas)){ //si el numero de preguntas no es un número
+				alert("ERROR: La información no es un número.");
+				objeto.numeroPersonas.value="";
+			}
+			else{
+				if(objeto.numeroPersonas<0){//si el número es negativo
+					alert("ERROR: No puedes usar números negativos");
+				}
+				else{
+					if(objeto.numeroPersonas>=0 && objeto.numeroPersonas<2){//si el número es 0 o 1
+						alert("ERROR: Introduce un número mayor a 1");
+					}
+					else{//si es un número válido
+						numeroParticipantes=objeto.numeroPersonas;
+						
+						//inicializo los arreglos con los números y cuales han sido ya mostrados
+						for(var i=0; i<numeroParticipantes; i++){
+							numeroObtenido[i]=0;
+						}
+						intentos= intentos+1;
+						
+					}
+				}
+			}
+		}
+	}
+	if(intentos>0){
+		if(intentos<=numeroParticipantes-1){
+			eliminaNumero();
+			if(intentos==numeroParticipantes-1){//cuando ya solo queda 1 número lo mostramos como el numero ganador
+				for(var i=0; i<numeroParticipantes; i++){
+					if(numeroObtenido[i]==0){
+						numeroGanador=i+1;
+					}
+				}
+				document.getElementById("ganador").value = numeroGanador;
+			}
+			intentos= intentos+1;
+		}
+		else{
+			alert("No hay más números, la rifa terminó");
+		}
+	}
+	
+}
+
+/************************************************************************************************************************************/	
+function eliminaNumero(){
+	//alert("entre función elimina numero");
+	var numerito=obtenRandom(1,numeroParticipantes+1);
+	listaNumero[intentos-1]=numerito;
+	//alert("el número eliminado es: "+listaNumero);
+	document.getElementById("eliminados").value = listaNumero;
+}
+
+/************************************************************************************************************************************/	
+function obtenRandom(min, max) {
+//alert("entre obtenRandon");
+  var sigueBuscando =true;
+  var numerito;
+  
+  while(sigueBuscando){
+	numerito= Math.floor(Math.random() * (max - min)) + min;
+  
+	  if(numeroObtenido[numerito-1]==0){
+		numeroObtenido[numerito-1]=1;
+		sigueBuscando=false;
+		break;
+	  }
+  }
+  
+  return numerito;
+}
+
+/************************************************************************************************************************************/	
+function ReiniciarRifa(){
+	//alert("Función ReiniciarRifa");
+	numeroParticipantes=0;
+	intentos=0;
+	listaNumero=[];
+	numeroObtenido=[];
+	numeroGanador=0;
+	document.getElementById("numeroPersonas").value = "";
+	document.getElementById("ganador").value = "";
+	document.getElementById("eliminados").value="";
+}
+	
+</script>
+
+</head>
+
+<body>
+<div id="titulo">
+    <h1 align="center">Rifa SPIRA</h1>
+    </div>
+    <p>&nbsp;</p>
+     <div id="contenido" >	
+        <table width="500" border="0" id="tabla" align="center">
+          <tbody>
+            <tr>
+              <td><p id="numeroEtiqueta"> Introduce el número de personas <br />
+				  <input id="numeroPersonas" type="text" name="numeroPersonas" >
+              </p></td>
+              <td><input  id="obtenerNumero" type="button" value="Obtener número" onclick="ObtenNumero();">
+              </td>
+            </tr>
+			  <tr>
+				   <td><p id="eliminadosLabel"> Números eliminados<br />
+                 <textarea id="eliminados" readonly wrap="yes" ></textarea>
+              </p></td>
+				   <td><p id="ganadorLabel"> Número ganador<br />
+                 <textarea id="ganador" readonly></textarea>
+              </p></td>
+			  </tr>
+			  <tr>
+				<td></td>
+				<td><input  id="reiniciar" type="button" value="Reiniciar" onclick="ReiniciarRifa();">
+              </td>
+            </tr>
+          </tbody>
+        </table>
+     	<div id="evaluacion"> </div>
+     </div>
+     <p>&nbsp;</p>
+</body>
+</html>
